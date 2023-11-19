@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"/> 
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" href="images/logo/logo.png">
+    <title>3renFix</title>
+</head>
+<body>
+    <!--Header section-->
+    <header>
+
+
+    <div class="logo">
+        <img src="images/logo/logo.png" alt="">
+        <h3>3RenFix</h3>
+    </div>
+    <div class="nav" id="small_menu">
+        <button class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </button>
+        <ul>
+            <li><a href="">Home</a></li>
+            <li><a href="https://t.me/Mp2bot">Movies</a></li>
+        </ul>
+    </div>
+  
+    <div class="user">
+        
+        <a href="https://t.me/Mp2bot">Movies BOT</a>
+     
+    </div>  
+</header>
+
+<!--Hero section-->
+<section>
+    <div class="heropage">
+        <div class="inside-heropage">
+            <span>NOW STREAMING</span>
+            <div class="line1">
+
+            </div>
+            <h1>OPPENHEIMER</h1>
+            <p>2023| USA | 180 min</p>
+            <div class="btn1">
+            <a href="https://salbeh.pw/player/?video_source=https://stream.fushaar.link/movie/45857/45857.mp4?wmsAuthSign=c2VydmVyX3RpbWU9Mi8xNS8yMDIyIDQ6MTI6NDQgUE0maGFzaF92YWx1ZT1HRFJna25FR2ZudmJwN3JJbFp1QWZBPT0mdmFsaWRtaW51dGVzPTQ1MA==&video_name=%D8%A3%D9%88%D8%A8%D9%86%D9%87%D8%A7%D9%8A%D9%85%D8%B1"><i class="fas fa-play"></i>Watch Now</a>
+            <a href="https://salbeh.pw/player/?video_source=https://stream.fushaar.link/movie/45857/45857.mp4?wmsAuthSign=c2VydmVyX3RpbWU9Mi8xNS8yMDIyIDQ6MTI6NDQgUE0maGFzaF92YWx1ZT1HRFJna25FR2ZudmJwN3JJbFp1QWZBPT0mdmFsaWRtaW51dGVzPTQ1MA==&video_name=%D8%A3%D9%88%D8%A8%D9%86%D9%87%D8%A7%D9%8A%D9%85%D8%B1"><i class="fas fa-heart"></i>Watch Later</a>
+            </div>
+        </div>
+    </div>
+    <div class="poster">
+        <img src="images/hero page/55.jpg" alt="">
+    </div>
+</section>
+
+
+        <!------Lates movies---->
+        <div class="latest-movies">
+            <h1>TRENDING ON 3RenFix</h1>
+            <div class="latest-container">
+    </header>
+    <div id="movies-container"></div>
+
+    <div id="movie-info">
+        <div id="movie-info-content">
+            <div id="close-btn" onclick="closeMovieInfo()">Close</div>
+            <h2 id="movie-title"></h2>
+            <p class="movie-info-item" id="movie-overview"></p>
+            <p class="movie-info-item">Popularity: <span id="movie-popularity"></span></p>
+            <p class="movie-info-item">Release Date: <span id="movie-release-date"></span></p>
+            <p class="movie-info-item">Vote Average: <span id="movie-vote-average"></span></p>
+            <p class="movie-info-item" hidden>Vote Count: <span id="movie-vote-count"></span></p>
+            <button onclick="openTelegramBot()">Click Here</button>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = '0fc676e7190331fa5aaae2651a56bf20';
+        const apiUrl = 'https://api.themoviedb.org/3';
+
+        function fetchMovies(endpoint) {
+            return fetch(`${apiUrl}/${endpoint}`)
+                .then(response => response.json())
+                .then(data => data.results)
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function displayMovies(movies) {
+            const moviesContainer = document.getElementById('movies-container');
+            moviesContainer.innerHTML = '';
+
+            movies.forEach(movie => {
+                const movieElement = document.createElement('div');
+                movieElement.classList.add('movie');
+
+                const image = document.createElement('img');
+                image.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                image.alt = movie.title;
+
+                const overlay = document.createElement('div');
+                overlay.classList.add('overlay');
+
+                const button = document.createElement('button');
+                button.textContent = 'Show Info';
+                button.onclick = () => showMovieInfo(movie);
+
+                const movieName = document.createElement('p');
+                movieName.classList.add('movie-name');
+                movieName.textContent = movie.title || movie.name;
+
+                overlay.appendChild(button);
+                overlay.appendChild(movieName);
+
+                movieElement.appendChild(image);
+                movieElement.appendChild(overlay);
+                moviesContainer.appendChild(movieElement);
+            });
+        }
+
+        function searchMovies() {
+            const searchInput = document.getElementById('searchInput').value;
+            if (searchInput.trim() !== '') {
+                fetchMovies(`search/multi?api_key=${apiKey}&query=${searchInput}&language=ar-SA`)
+                    .then(displayMovies)
+                    .catch(error => console.error('Error:', error));
+            }
+        }
+
+        function showMovieInfo(movie) {
+            const movieInfo = document.getElementById('movie-info');
+            const movieTitle = document.getElementById('movie-title');
+            const movieOverview = document.getElementById('movie-overview');
+            const moviePopularity = document.getElementById('movie-popularity');
+            const movieReleaseDate = document.getElementById('movie-release-date');
+            const movieVoteAverage = document.getElementById('movie-vote-average');
+            const movieVoteCount = document.getElementById('movie-vote-count');
+
+            movieInfo.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`;
+
+            movieTitle.textContent = movie.title || movie.name;
+            movieOverview.textContent = movie.overview || 'No overview available.';
+            moviePopularity.textContent = `${movie.popularity} 🔥`;
+            movieReleaseDate.textContent = `Release Date: ${formatDate(movie.release_date)} 📅`;
+            movieVoteAverage.textContent = `Vote Average: ${movie.vote_average} ⭐`;
+            movieVoteCount.textContent = `Vote Count: ${movie.vote_count} votes`;
+
+            movieInfo.style.display = 'flex';
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        function closeMovieInfo() {
+            const movieInfo = document.getElementById('movie-info');
+            movieInfo.style.backgroundImage = 'none';
+            movieInfo.style.display = 'none';
+        }
+
+        function openTelegramBot() {
+            window.open('https://t.me/mp2bot', '_blank');
+        }
+
+        fetchMovies('trending/movie/day?api_key=' + apiKey + '&include_adult=0&language=ar-SA&page=1')
+            .then(displayMovies)
+            .catch(error => console.error('Error:', error));
+    </script>
+
+
+            </div>
+        
+        <footer>© 2023Made With ❤ / #GAZA</footer>
+</body>
+</html>
